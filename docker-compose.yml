@@ -37,7 +37,7 @@ services:
     - DEBUG=false
 
     - GITLAB_REGISTRY_ENABLED=true
-    - GITLAB_REGISTRY_HOST=registry.example.com
+    - GITLAB_REGISTRY_HOST=0.0.0.0:5000
     - GITLAB_REGISTRY_PORT=443
     - GITLAB_REGISTRY_API_URL=http://registry:5000
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry.key

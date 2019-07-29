@@ -72,7 +72,7 @@ LABEL \
     org.label-schema.vcs-ref=${VCS_REF} \
     com.damagehead.gitlab.license=MIT
 
-EXPOSE 22/tcp 80/tcp 443/tcp
+EXPOSE 22/tcp 80/tcp 443/tcp 5000
 
 VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}"]
 WORKDIR ${GITLAB_INSTALL_DIR}
