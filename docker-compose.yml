@@ -1,6 +1,26 @@
 version: '2'
 
 services:
+
+  registry:
+      image: registry
+      restart: always
+      expose:
+          - "5000"
+      ports:
+          - "5000:5000"
+      volumes:
+          - ./gitlab/shared/registry:/registry
+          - ./certs:/certs
+      environment:
+          - REGISTRY_LOG_LEVEL=info
+          - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/registry
+          - REGISTRY_AUTH_TOKEN_REALM=https://git.example.com/jwt/auth
+          - REGISTRY_AUTH_TOKEN_SERVICE=container_registry
+          - REGISTRY_AUTH_TOKEN_ISSUER=gitlab-issuer
+          - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/certs/registry.crt
+          - REGISTRY_STORAGE_DELETE_ENABLED=true
+
   redis:
     restart: always
     image: sameersbn/redis:4.0.9-1
@@ -31,6 +51,8 @@ services:
     - "10022:22"
     volumes:
     - /srv/docker/gitlab/gitlab:/home/git/data:Z
+    - ./gitlab:/home/git/data
+    - ./certs:/certs
     environment:
     - DEBUG=false
 
@@ -49,6 +71,14 @@ services:
 
     - GITLAB_HTTPS=false
     - SSL_SELF_SIGNED=false
+
+    - GITLAB_REGISTRY_ENABLED=true
+    - GITLAB_REGISTRY_HOST=0.0.0.0:5000
+    - GITLAB_REGISTRY_API_URL=http://registry:5000
+    - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
+    - GITLAB_REGISTRY_ISSUER=gitlab-issuer
+    - SSL_REGISTRY_KEY_PATH=/certs/registry.key
+    - SSL_REGISTRY_CERT_PATH=/certs/registry.crt
 
     - GITLAB_HOST=localhost
     - GITLAB_PORT=10080
